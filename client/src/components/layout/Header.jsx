@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { 
-  Search, 
   Bell, 
-  Plus, 
-  Download, 
   Palette, 
   ChevronDown,
   Coins,
-  Menu
+  Menu,
+  LogOut
 } from 'lucide-react';
 
 const Header = ({ onThemeToggle }) => {
   const { isCollapsed, toggleSidebar } = useSidebar();
   const { compactMode } = useTheme();
+  const { user, logout } = useAuth();
   const [notifications] = useState(3);
 
   return (
@@ -35,32 +35,31 @@ const Header = ({ onThemeToggle }) => {
           >
             <Menu className="w-5 h-5" />
           </button>
-          
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Orders Management
-          </h2>
-          <div className="flex items-center space-x-2">
-            <button className={`${compactMode ? 'px-2 py-1 text-xs' : 'px-3 py-1 text-sm'} bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-1`}>
-              <Plus className="w-4 h-4" />
-              <span>Add Order</span>
-            </button>
-            <button className={`${compactMode ? 'px-2 py-1 text-xs' : 'px-3 py-1 text-sm'} bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-1`}>
-              <Download className="w-4 h-4" />
-              <span>Export</span>
-            </button>
+
+
+        </div>
+
+        {/* Centered Search Bar */}
+        <div className="flex-1 flex justify-center px-8">
+          <div className="relative flex items-center bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-600 overflow-hidden max-w-md w-full transition-all duration-300 hover:shadow-xl hover:scale-105 focus-within:shadow-xl focus-within:scale-105 focus-within:border-blue-400 dark:focus-within:border-blue-500">
+            <select className="px-3 py-2 text-sm border-0 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-0 focus:outline-none min-w-0 flex-shrink-0 rounded-l-full transition-colors duration-200">
+              <option value="awb" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">AWB ID</option>
+              <option value="order" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">Order ID</option>
+              <option value="rth" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">RTH ID</option>
+              <option value="mobile" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">Mobile No</option>
+              <option value="ndr" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">NDR</option>
+              <option value="name" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">Name</option>
+            </select>
+            <div className="w-px h-4 bg-gray-200 dark:bg-gray-600"></div>
+            <input 
+              type="text" 
+              placeholder="Search by AWB ID" 
+              className="flex-1 px-3 py-2 text-sm border-0 bg-transparent focus:ring-0 focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-r-full transition-colors duration-200"
+            />
           </div>
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Search Bar */}
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Search orders..." 
-              className={`${compactMode ? 'w-48 py-1.5' : 'w-64 py-2'} pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          </div>
 
           {/* Notifications */}
           <div className="relative">
@@ -82,15 +81,30 @@ const Header = ({ onThemeToggle }) => {
 
           {/* Profile */}
           <div className="flex items-center space-x-3">
-            <button className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors">
-              <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&h=40" 
-                alt="Profile" 
-                className="w-8 h-8 rounded-full"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">John Doe</span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
+            <div className="relative group">
+              <button className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors">
+                <img 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&h=40" 
+                  alt="Profile" 
+                  className="w-8 h-8 rounded-full"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">{user?.name || 'John Doe'}</span>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+              </button>
+              
+              {/* Dropdown Menu */}
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-1">
+                  <button
+                    onClick={logout}
+                    className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Theme Toggle */}
