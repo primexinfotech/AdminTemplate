@@ -24,8 +24,20 @@ import {
 } from 'lucide-react';
 
 const Sidebar = () => {
-  const { isCollapsed, toggleSidebar } = useSidebar();
-  const { sidebarColor, animationsEnabled } = useTheme();
+  const { 
+    isOpen = true, 
+    isMobile = false, 
+    toggleSidebar = () => {}, 
+    closeSidebar = () => {} 
+  } = useSidebar() || {};
+  const { 
+    theme = 'light', 
+    sidebarColor = 'blue', 
+    animationsEnabled = true, 
+    compactMode = false, 
+    sidebarFixed = true 
+  } = useTheme() || {};
+  const { isCollapsed, toggleSidebar: toggleSidebarContext } = useSidebar();
   const [location] = useLocation();
   const [expandedMenus, setExpandedMenus] = useState({});
   const [isHovering, setIsHovering] = useState(false);
@@ -70,15 +82,18 @@ const Sidebar = () => {
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
-  const sidebarColorClasses = {
-    blue: { bg: 'bg-blue-600', hover: 'hover:bg-blue-700', text: 'text-blue-600', border: 'border-blue-600' },
-    purple: { bg: 'bg-purple-600', hover: 'hover:bg-purple-700', text: 'text-purple-600', border: 'border-purple-600' },
-    green: { bg: 'bg-green-600', hover: 'hover:bg-green-700', text: 'text-green-600', border: 'border-green-600' },
-    red: { bg: 'bg-red-600', hover: 'hover:bg-red-700', text: 'text-red-600', border: 'border-red-600' },
-    indigo: { bg: 'bg-indigo-600', hover: 'hover:bg-indigo-700', text: 'text-indigo-600', border: 'border-indigo-600' },
-    pink: { bg: 'bg-pink-600', hover: 'hover:bg-pink-700', text: 'text-pink-600', border: 'border-pink-600' },
-    teal: { bg: 'bg-teal-600', hover: 'hover:bg-teal-700', text: 'text-teal-600', border: 'border-teal-600' },
-    gray: { bg: 'bg-gray-600', hover: 'hover:bg-gray-700', text: 'text-gray-600', border: 'border-gray-600' },
+  const getSidebarColorClasses = (color) => {
+    const colorMap = {
+      blue: { bg: 'bg-blue-600', hover: 'hover:bg-blue-700', text: 'text-blue-600', border: 'border-blue-600' },
+      purple: { bg: 'bg-purple-600', hover: 'hover:bg-purple-700', text: 'text-purple-600', border: 'border-purple-600' },
+      green: { bg: 'bg-green-600', hover: 'hover:bg-green-700', text: 'text-green-600', border: 'border-green-600' },
+      red: { bg: 'bg-red-600', hover: 'hover:bg-red-700', text: 'text-red-600', border: 'border-red-600' },
+      indigo: { bg: 'bg-indigo-600', hover: 'hover:bg-indigo-700', text: 'text-indigo-600', border: 'border-indigo-600' },
+      pink: { bg: 'bg-pink-600', hover: 'hover:bg-pink-700', text: 'text-pink-600', border: 'border-pink-600' },
+      teal: { bg: 'bg-teal-600', hover: 'hover:bg-teal-700', text: 'text-teal-600', border: 'border-teal-600' },
+      gray: { bg: 'bg-gray-600', hover: 'hover:bg-gray-700', text: 'text-gray-600', border: 'border-gray-600' },
+    };
+    return colorMap[color || 'blue'] || colorMap.blue;
   };
 
   const toggleSubmenu = (itemLabel) => {
@@ -96,7 +111,7 @@ const Sidebar = () => {
 
   const getActiveClasses = (path) => {
     const isActive = location === path;
-    const colorClass = sidebarColorClasses[sidebarColor];
+    const colorClass = getSidebarColorClasses(sidebarColor);
     return isActive 
       ? `${colorClass.text} font-semibold`
       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800';
@@ -106,6 +121,8 @@ const Sidebar = () => {
     expanded: { width: '256px' },
     collapsed: { width: '64px' }
   };
+
+  
 
   return (
     <motion.aside
@@ -128,7 +145,7 @@ const Sidebar = () => {
       {/* Sidebar Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center space-x-3">
-          <div className={`w-8 h-8 ${sidebarColorClasses[sidebarColor].bg} rounded-lg flex items-center justify-center`}>
+          <div className={`w-8 h-8 ${getSidebarColorClasses(sidebarColor).bg} rounded-lg flex items-center justify-center`}>
             <Truck className="w-5 h-5 text-white" />
           </div>
           {!isCollapsed && (
@@ -158,53 +175,66 @@ const Sidebar = () => {
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isExpanded = expandedMenus[item.label];
-          
+
           return (
             <div key={item.label}>
               {/* Main Menu Item */}
               <div className="flex items-center">
-                <Link href={item.path} className="flex-1">
+                {item.hasSubmenu ? (
+                  // For items with submenu, make entire area clickable for toggle
                   <motion.div
                     whileHover={animationsEnabled ? { scale: 1.02 } : {}}
                     whileTap={animationsEnabled ? { scale: 0.98 } : {}}
-                    className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 cursor-pointer ${getActiveClasses(item.path)}`}
+                    onClick={() => toggleSubmenu(item.label)}
+                    className={`flex items-center justify-between w-full p-2 rounded-lg transition-all duration-200 cursor-pointer ${getActiveClasses(item.path)}`}
                   >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    {!isCollapsed && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="font-medium text-sm"
+                    <div className="flex items-center space-x-3">
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      {(!isCollapsed || isHovering) && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="font-medium text-sm"
+                        >
+                          {item.label}
+                        </motion.span>
+                      )}
+                    </div>
+                    {(!isCollapsed || isHovering) && (
+                      <motion.div
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
                       >
-                        {item.label}
-                      </motion.span>
+                        <ChevronDown className="w-4 h-4 text-gray-500" />
+                      </motion.div>
                     )}
                   </motion.div>
-                </Link>
-                
-                {/* Submenu Toggle */}
-                {item.hasSubmenu && !isCollapsed && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleSubmenu(item.label);
-                    }}
-                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                  >
+                ) : (
+                  // For items without submenu, use Link as before
+                  <Link href={item.path} className="flex-1">
                     <motion.div
-                      animate={{ rotate: isExpanded ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
+                      whileHover={animationsEnabled ? { scale: 1.02 } : {}}
+                      whileTap={animationsEnabled ? { scale: 0.98 } : {}}
+                      className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 cursor-pointer ${getActiveClasses(item.path)}`}
                     >
-                      <ChevronDown className="w-4 h-4 text-gray-500" />
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      {(!isCollapsed || isHovering) && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="font-medium text-sm"
+                        >
+                          {item.label}
+                        </motion.span>
+                      )}
                     </motion.div>
-                  </button>
+                  </Link>
                 )}
               </div>
-              
+
               {/* Submenu Items */}
               <AnimatePresence>
-                {item.hasSubmenu && isExpanded && !isCollapsed && (
+                {item.hasSubmenu && isExpanded && (!isCollapsed || isHovering) && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}

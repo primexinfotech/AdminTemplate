@@ -1,5 +1,5 @@
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
-import { SidebarProvider } from '@/contexts/SidebarContext';
+import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import ThemePanel from './ThemePanel';
@@ -9,6 +9,7 @@ const AdminLayoutContent = ({ children }) => {
   const [isThemePanelOpen, setIsThemePanelOpen] = useState(false);
   const [showFloatingNav, setShowFloatingNav] = useState(false);
   const { navbarVisible } = useTheme();
+  const { isCollapsed } = useSidebar();
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -17,7 +18,7 @@ const AdminLayoutContent = ({ children }) => {
         {navbarVisible && (
           <Header onThemeToggle={() => setIsThemePanelOpen(true)} />
         )}
-        
+
         {/* Floating navbar trigger when navbar is hidden */}
         {!navbarVisible && (
           <div 
@@ -35,7 +36,7 @@ const AdminLayoutContent = ({ children }) => {
                 </svg>
               </button>
             </div>
-            
+
             {showFloatingNav && (
               <div className="absolute top-0 right-0 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-4 w-64 transform transition-all duration-200">
                 <div className="flex items-center justify-between mb-4">
@@ -54,8 +55,8 @@ const AdminLayoutContent = ({ children }) => {
             )}
           </div>
         )}
-        
-        <main className="flex-1 overflow-y-auto p-6">
+
+        <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
           {children}
         </main>
       </div>

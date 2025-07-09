@@ -27,22 +27,88 @@ const ThemePanel = ({ isOpen, onClose }) => {
 
   const sidebarColors = [
     { name: 'blue', class: 'bg-blue-600', label: 'Blue' },
+    { name: 'cyan', class: 'bg-cyan-600', label: 'Cyan' },
+    { name: 'emerald', class: 'bg-emerald-600', label: 'Emerald' },
     { name: 'purple', class: 'bg-purple-600', label: 'Purple' },
-    { name: 'green', class: 'bg-green-600', label: 'Green' },
-    { name: 'red', class: 'bg-red-600', label: 'Red' },
-    { name: 'indigo', class: 'bg-indigo-600', label: 'Indigo' },
+    { name: 'orange', class: 'bg-orange-600', label: 'Orange' },
     { name: 'pink', class: 'bg-pink-600', label: 'Pink' },
-    { name: 'teal', class: 'bg-teal-600', label: 'Teal' },
-    { name: 'gray', class: 'bg-gray-600', label: 'Gray' },
+    { name: 'indigo', class: 'bg-indigo-600', label: 'Indigo' },
+    { name: 'slate', class: 'bg-slate-600', label: 'Slate' },
   ];
 
   const themePresets = [
-    { name: 'light', label: 'Light', icon: Sun, colors: { primary: 'blue', secondary: 'gray' } },
-    { name: 'dark', label: 'Dark', icon: Moon, colors: { primary: 'blue', secondary: 'gray' } },
-    { name: 'ocean', label: 'Ocean', icon: Sun, colors: { primary: 'teal', secondary: 'blue' } },
-    { name: 'forest', label: 'Forest', icon: Sun, colors: { primary: 'green', secondary: 'gray' } },
-    { name: 'sunset', label: 'Sunset', icon: Sun, colors: { primary: 'red', secondary: 'pink' } },
-    { name: 'lavender', label: 'Lavender', icon: Sun, colors: { primary: 'purple', secondary: 'indigo' } },
+    { 
+      name: 'light', 
+      label: 'Light', 
+      icon: Sun,
+      theme: 'light',
+      sidebarColor: 'blue',
+      navbarColor: 'white',
+      colors: ['#3B82F6', '#F8FAFC', '#1E293B']
+    },
+    { 
+      name: 'dark', 
+      label: 'Dark', 
+      icon: Moon,
+      theme: 'dark',
+      sidebarColor: 'slate',
+      navbarColor: 'dark',
+      colors: ['#1E293B', '#0F172A', '#64748B']
+    },
+    { 
+      name: 'ocean', 
+      label: 'Ocean', 
+      icon: Moon,
+      theme: 'light',
+      sidebarColor: 'cyan',
+      navbarColor: 'colored',
+      colors: ['#06B6D4', '#0891B2', '#164E63']
+    },
+    { 
+      name: 'forest', 
+      label: 'Forest', 
+      icon: Moon,
+      theme: 'light',
+      sidebarColor: 'emerald',
+      navbarColor: 'colored',
+      colors: ['#10B981', '#059669', '#064E3B']
+    },
+    { 
+      name: 'sunset', 
+      label: 'Sunset', 
+      icon: Sun,
+      theme: 'light',
+      sidebarColor: 'orange',
+      navbarColor: 'colored',
+      colors: ['#F97316', '#EA580C', '#9A3412']
+    },
+    { 
+      name: 'lavender', 
+      label: 'Lavender', 
+      icon: Sun,
+      theme: 'light',
+      sidebarColor: 'purple',
+      navbarColor: 'colored',
+      colors: ['#8B5CF6', '#7C3AED', '#581C87']
+    },
+    { 
+      name: 'rose', 
+      label: 'Rose', 
+      icon: Moon,
+      theme: 'light',
+      sidebarColor: 'pink',
+      navbarColor: 'colored',
+      colors: ['#EC4899', '#DB2777', '#831843']
+    },
+    { 
+      name: 'midnight', 
+      label: 'Midnight', 
+      icon: Moon,
+      theme: 'dark',
+      sidebarColor: 'indigo',
+      navbarColor: 'dark',
+      colors: ['#6366F1', '#4F46E5', '#312E81']
+    }
   ];
 
   const panelVariants = {
@@ -114,37 +180,12 @@ const ThemePanel = ({ isOpen, onClose }) => {
                       <button
                         key={preset.name}
                         onClick={() => {
-                          if (preset.name === 'dark') {
-                            updateTheme('dark');
-                            updateSidebarColor('blue');
-                          } else if (preset.name === 'light') {
-                            updateTheme('light');
-                            updateSidebarColor('blue');
-                          } else if (preset.name === 'ocean') {
-                            updateTheme('light');
-                            updateSidebarColor('teal');
-                            updateNavbarColor('colored');
-                          } else if (preset.name === 'forest') {
-                            updateTheme('light');
-                            updateSidebarColor('green');
-                            updateNavbarColor('colored');
-                          } else if (preset.name === 'sunset') {
-                            updateTheme('light');
-                            updateSidebarColor('red');
-                            updateNavbarColor('colored');
-                          } else if (preset.name === 'lavender') {
-                            updateTheme('light');
-                            updateSidebarColor('purple');
-                            updateNavbarColor('colored');
-                          }
+                          updateTheme(preset.theme);
+                          updateSidebarColor(preset.sidebarColor);
+                          updateNavbarColor(preset.navbarColor);
                         }}
                         className={`p-2 border rounded-md text-xs font-medium transition-all ${
-                          (preset.name === 'light' && theme === 'light' && sidebarColor === 'blue') ||
-                          (preset.name === 'dark' && theme === 'dark') ||
-                          (preset.name === 'ocean' && theme === 'light' && sidebarColor === 'teal') ||
-                          (preset.name === 'forest' && theme === 'light' && sidebarColor === 'green') ||
-                          (preset.name === 'sunset' && theme === 'light' && sidebarColor === 'red') ||
-                          (preset.name === 'lavender' && theme === 'light' && sidebarColor === 'purple')
+                          theme === preset.theme && sidebarColor === preset.sidebarColor
                             ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
                             : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-gray-400'
                         }`}
@@ -193,18 +234,24 @@ const ThemePanel = ({ isOpen, onClose }) => {
                 <h4 className="text-xs font-medium text-gray-900 dark:text-white mb-2">
                   Sidebar Color
                 </h4>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-4 gap-1.5">
                   {sidebarColors.map((color) => (
                     <button
                       key={color.name}
                       onClick={() => updateSidebarColor(color.name)}
-                      className={`w-8 h-8 rounded-md ${color.class} transition-all ${
+                      className={`relative w-7 h-7 rounded-lg border-2 ${color.class} transition-all duration-200 hover:scale-110 ${
                         sidebarColor === color.name
-                          ? 'ring-2 ring-offset-1 ring-gray-400 dark:ring-gray-500'
-                          : 'hover:ring-2 hover:ring-offset-1 hover:ring-gray-300'
+                          ? 'border-gray-800 dark:border-white shadow-lg ring-2 ring-gray-300 dark:ring-gray-600'
+                          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                       }`}
                       title={color.label}
-                    />
+                    >
+                      {sidebarColor === color.name && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full opacity-90"></div>
+                        </div>
+                      )}
+                    </button>
                   ))}
                 </div>
               </div>

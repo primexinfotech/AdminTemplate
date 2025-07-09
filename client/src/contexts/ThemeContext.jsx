@@ -45,7 +45,7 @@ export const ThemeProvider = ({ children }) => {
 
     // Apply theme to document
     document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    
+
     // Apply font size
     document.documentElement.style.setProperty('--font-size', `${savedFontSize}px`);
     document.documentElement.style.setProperty('--border-radius', `${savedBorderRadius}px`);
@@ -125,27 +125,31 @@ export const ThemeProvider = ({ children }) => {
     localStorage.removeItem('sidebarFixed');
   };
 
-  const value = {
-    theme,
-    sidebarColor,
-    navbarColor,
-    navbarVisible,
-    fontSize,
-    borderRadius,
-    animationsEnabled,
-    compactMode,
-    sidebarFixed,
+  const contextValue = {
+    theme: theme || 'light',
     updateTheme,
+    sidebarColor: sidebarColor || 'blue',
     updateSidebarColor,
+    navbarColor: navbarColor || 'white',
     updateNavbarColor,
+    navbarVisible: navbarVisible !== undefined ? navbarVisible : true,
     toggleNavbarVisible,
+    fontSize: fontSize || 14,
     updateFontSize,
+    borderRadius: borderRadius || 6,
     updateBorderRadius,
+    animationsEnabled: animationsEnabled !== undefined ? animationsEnabled : true,
     toggleAnimations,
+    compactMode: compactMode !== undefined ? compactMode : false,
     toggleCompactMode,
+    sidebarFixed: sidebarFixed !== undefined ? sidebarFixed : true,
     toggleSidebarFixed,
     resetToDefault,
   };
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
