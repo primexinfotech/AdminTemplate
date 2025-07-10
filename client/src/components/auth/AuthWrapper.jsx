@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import WelcomeScreen from './SplashScreen';
 import LoginScreen from './LoginScreen';
@@ -15,21 +16,22 @@ const AuthWrapper = ({ children }) => {
   }
 
   if (!user) {
-    if (currentScreen === 'welcome') {
-      return (
-        <WelcomeScreen 
-          onLogin={() => setCurrentScreen('login')}
-          onSignUp={() => setCurrentScreen('signup')}
-        />
-      );
-    }
-    if (currentScreen === 'login') {
-      return <LoginScreen onBack={() => setCurrentScreen('welcome')} />;
-    }
-    if (currentScreen === 'signup') {
-      // For now, redirect to login since signup component doesn't exist yet
-      return <LoginScreen onBack={() => setCurrentScreen('welcome')} />;
-    }
+    return (
+      <div className="min-h-screen overflow-hidden">
+        {currentScreen === 'welcome' && (
+          <WelcomeScreen 
+            onLogin={() => setCurrentScreen('login')}
+            onSignUp={() => setCurrentScreen('signup')}
+          />
+        )}
+        {currentScreen === 'login' && (
+          <LoginScreen onBack={() => setCurrentScreen('welcome')} />
+        )}
+        {currentScreen === 'signup' && (
+          <LoginScreen onBack={() => setCurrentScreen('welcome')} />
+        )}
+      </div>
+    );
   }
 
   return children;
