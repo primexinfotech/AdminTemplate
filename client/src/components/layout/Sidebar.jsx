@@ -125,30 +125,42 @@ const Sidebar = () => {
   
 
   return (
-    <motion.aside
-      variants={animationsEnabled ? sidebarVariants : {}}
-      initial={false}
-      animate={isCollapsed && !isHovering ? 'collapsed' : 'expanded'}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="fixed left-0 top-0 h-full bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700 z-40 group"
-      onMouseEnter={() => {
-        if (isCollapsed) {
-          setIsHovering(true);
-        }
-      }}
-      onMouseLeave={() => {
-        if (isCollapsed) {
-          setIsHovering(false);
-        }
-      }}
-    >
+    <>
+      {/* Mobile overlay */}
+      {isMobile && isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+      
+      <motion.aside
+        variants={animationsEnabled ? sidebarVariants : {}}
+        initial={false}
+        animate={isMobile ? (isOpen ? 'expanded' : 'collapsed') : (isCollapsed && !isHovering ? 'collapsed' : 'expanded')}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className={`fixed left-0 top-0 h-full bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700 z-40 group touch-manipulation will-change-transform
+          ${isMobile ? (isOpen ? 'translate-x-0' : '-translate-x-full') : (isCollapsed && !isHovering ? '-translate-x-full' : 'translate-x-0')}
+          ${!isMobile ? 'lg:block' : ''}
+        `}
+        onMouseEnter={() => {
+          if (isCollapsed && !isMobile) {
+            setIsHovering(true);
+          }
+        }}
+        onMouseLeave={() => {
+          if (isCollapsed && !isMobile) {
+            setIsHovering(false);
+          }
+        }}
+      >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between p-3 md:p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center space-x-3">
           <div className={`w-8 h-8 ${getSidebarColorClasses(sidebarColor).bg} rounded-lg flex items-center justify-center`}>
             <Truck className="w-5 h-5 text-white" />
           </div>
-          {!isCollapsed && (
+          {(!isCollapsed || isMobile) && (
             <motion.h1 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -159,10 +171,12 @@ const Sidebar = () => {
           )}
         </div>
         <button 
-          onClick={toggleSidebar}
-          className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          onClick={isMobile ? closeSidebar : toggleSidebar}
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
         >
-          {isCollapsed ? (
+          {isMobile ? (
+            <ChevronLeft className="w-5 h-5 text-gray-500" />
+          ) : isCollapsed ? (
             <ChevronRight className="w-5 h-5 text-gray-500" />
           ) : (
             <ChevronLeft className="w-5 h-5 text-gray-500" />
@@ -171,7 +185,7 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar Navigation */}
-      <nav className="p-4 space-y-1">
+      <nav className="p-3 md:p-4 space-y-1 overflow-y-auto flex-1">
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isExpanded = expandedMenus[item.label];
@@ -186,7 +200,7 @@ const Sidebar = () => {
                     whileHover={animationsEnabled ? { scale: 1.02 } : {}}
                     whileTap={animationsEnabled ? { scale: 0.98 } : {}}
                     onClick={() => toggleSubmenu(item.label)}
-                    className={`flex items-center justify-between w-full p-2 rounded-lg transition-all duration-200 cursor-pointer ${getActiveClasses(item.path)}`}
+                    className={`flex items-center justify-between w-full p-3 md:p-2 rounded-lg transition-all duration-200 cursor-pointer touch-manipulation min-h-[44px] ${getActiveClasses(item.path)}`}
                   >
                     <div className="flex items-center space-x-3">
                       <Icon className="w-4 h-4 flex-shrink-0" />
@@ -215,7 +229,12 @@ const Sidebar = () => {
                     <motion.div
                       whileHover={animationsEnabled ? { scale: 1.02 } : {}}
                       whileTap={animationsEnabled ? { scale: 0.98 } : {}}
-                      className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 cursor-pointer ${getActiveClasses(item.path)}`}
+                      onClick={() => {
+                        if (isMobile) {
+                          closeSidebar();
+                        }
+                      }}
+                      className={`flex items-center space-x-3 p-3 md:p-2 rounded-lg transition-all duration-200 cursor-pointer touch-manipulation min-h-[44px] ${getActiveClasses(item.path)}`}
                     >
                       <Icon className="w-4 h-4 flex-shrink-0" />
                       {(!isCollapsed || isHovering) && (
@@ -248,7 +267,12 @@ const Sidebar = () => {
                         <Link key={subItem.path} href={subItem.path}>
                           <motion.div
                             whileHover={animationsEnabled ? { scale: 1.02 } : {}}
-                            className={`flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 cursor-pointer ${getActiveClasses(subItem.path)}`}
+                            onClick={() => {
+                              if (isMobile) {
+                                closeSidebar();
+                              }
+                            }}
+                            className={`flex items-center space-x-3 p-3 md:p-2 rounded-lg transition-all duration-200 cursor-pointer touch-manipulation min-h-[44px] ${getActiveClasses(subItem.path)}`}
                           >
                             <SubIcon className="w-3 h-3 flex-shrink-0" />
                             <span className="font-medium text-xs">{subItem.label}</span>
@@ -264,6 +288,7 @@ const Sidebar = () => {
         })}
       </nav>
     </motion.aside>
+    </>
   );
 };
 

@@ -9,7 +9,7 @@ const AdminLayoutContent = ({ children }) => {
   const [isThemePanelOpen, setIsThemePanelOpen] = useState(false);
   const [showFloatingNav, setShowFloatingNav] = useState(false);
   const { navbarVisible } = useTheme();
-  const { isCollapsed } = useSidebar();
+  const { isCollapsed, isMobile } = useSidebar();
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -17,6 +17,28 @@ const AdminLayoutContent = ({ children }) => {
       <div className="flex-1 flex flex-col min-w-0">
         {navbarVisible && (
           <Header onThemeToggle={() => setIsThemePanelOpen(true)} />
+        )}
+
+        {/* Mobile Search Bar */}
+        {isMobile && navbarVisible && (
+          <div className="mobile-search">
+            <div className="relative flex items-center bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-600 overflow-hidden w-full transition-all duration-300 focus-within:border-blue-400 dark:focus-within:border-blue-500">
+              <select className="px-3 py-2 text-sm border-0 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-0 focus:outline-none min-w-0 flex-shrink-0 rounded-l-full transition-colors duration-200">
+                <option value="awb">AWB</option>
+                <option value="order">Order</option>
+                <option value="rth">RTH</option>
+                <option value="mobile">Mobile</option>
+                <option value="ndr">NDR</option>
+                <option value="name">Name</option>
+              </select>
+              <div className="w-px h-4 bg-gray-200 dark:bg-gray-600"></div>
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="flex-1 px-3 py-2 text-sm border-0 bg-transparent focus:ring-0 focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-r-full transition-colors duration-200"
+              />
+            </div>
+          </div>
         )}
 
         {/* Floating navbar trigger when navbar is hidden */}
@@ -56,7 +78,13 @@ const AdminLayoutContent = ({ children }) => {
           </div>
         )}
 
-        <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+        <main className={`flex-1 overflow-y-auto transition-all duration-300 ${
+          isMobile 
+            ? 'ml-0 p-4' 
+            : isCollapsed 
+              ? 'ml-0 p-4 md:p-6' 
+              : 'ml-64 p-4 md:p-6'
+        }`}>
           {children}
         </main>
       </div>

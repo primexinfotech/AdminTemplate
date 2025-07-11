@@ -370,28 +370,27 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
       {/* Animated Gradient Background */}
       <AnimatedGradientBackground theme={theme} />
       
-      {/* Animated background elements */}
-      <BackgroundAnimation theme={theme} />
+      {/* Simplified background animation for mobile */}
+      <div className="hidden md:block">
+        <BackgroundAnimation theme={theme} />
+      </div>
 
-      <div className="relative z-10 w-full max-w-md mx-4">
+      <div className="relative z-10 w-full max-w-md mx-4 px-2 sm:px-4">
         <motion.div
-          initial={{ y: 30, opacity: 0, scale: 0.95 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ 
-            duration: 0.8, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            type: "spring",
-            stiffness: 300,
-            damping: 30
+            duration: 0.6,
+            ease: "easeOut"
           }}
-          className={`backdrop-blur-lg rounded-2xl p-8 shadow-2xl border relative transition-all duration-700 ${
+          className={`backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border relative will-change-transform ${
             theme === 'solid'
-              ? 'bg-slate-800/80 border-slate-600/60'
+              ? 'bg-slate-800/90 border-slate-600/60'
               : theme === 'midnight' 
-                ? 'bg-black/40 border-gray-700/50' 
+                ? 'bg-black/60 border-gray-700/50' 
                 : theme === 'dark' 
-                  ? 'bg-slate-800/30 border-slate-600/40' 
-                  : 'bg-white/15 border-white/30'
+                  ? 'bg-slate-800/50 border-slate-600/40' 
+                  : 'bg-white/25 border-white/30'
           }`}
         >
 
@@ -399,8 +398,8 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex justify-center mb-6"
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="flex justify-center mb-4 sm:mb-6"
           >
             <motion.div
               animate={{
@@ -417,11 +416,11 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
                 repeat: Infinity,
                 ease: 'easeInOut'
               }}
-              className={`w-20 h-20 rounded-full flex items-center justify-center border-2 transition-all duration-700 ${
+              className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center border-2 ${
                 theme === 'solid' ? 'bg-slate-600/40' : theme === 'midnight' ? 'bg-gray-900/40' : theme === 'dark' ? 'bg-slate-700/30' : 'bg-white/20'
               }`}
             >
-              <User className="w-10 h-10 text-white" />
+              <User className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </motion.div>
           </motion.div>
 
@@ -429,17 +428,17 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-center mb-8"
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-center mb-6 sm:mb-8"
           >
-            <h1 className="text-white text-2xl font-bold mb-4">Welcome Back</h1>
+            <h1 className="text-white text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Welcome Back</h1>
 
             {/* Date and Time Display */}
             <div className="mb-4">
-              <div className="text-white text-3xl font-bold mb-1">
+              <div className="text-white text-2xl sm:text-3xl font-bold mb-1">
                 {formatTime(currentTime)}
               </div>
-              <div className="text-white/80 text-sm">
+              <div className="text-white/80 text-xs sm:text-sm">
                 {formatDate(currentTime)}
               </div>
             </div>
@@ -451,28 +450,26 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="space-y-4"
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="space-y-3 sm:space-y-4"
           >
             {/* Login Button */}
             <motion.button
               onClick={handleLogin}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-200 flex items-center justify-center space-x-2"
+              className="w-full py-3 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-transparent transition-colors duration-200 flex items-center justify-center space-x-2 touch-manipulation text-sm sm:text-base"
             >
-              <LogIn className="w-5 h-5" />
+              <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Login to Account</span>
             </motion.button>
 
             {/* SignUp Button */}
             <motion.button
               onClick={handleSignUp}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3 bg-white/10 text-white font-semibold rounded-lg shadow-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-200 flex items-center justify-center space-x-2 border border-white/20"
+              className="w-full py-3 sm:py-3 bg-white/10 text-white font-semibold rounded-lg shadow-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent transition-colors duration-200 flex items-center justify-center space-x-2 border border-white/20 touch-manipulation text-sm sm:text-base"
             >
-              <UserPlus className="w-5 h-5" />
+              <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Create New Account</span>
             </motion.button>
           </motion.div>
@@ -481,8 +478,8 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-            className={`text-center mt-8 pt-4 border-t transition-all duration-700 ${
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className={`text-center mt-6 sm:mt-8 pt-4 border-t transition-all duration-700 ${
               theme === 'solid' ? 'border-slate-600/50' : theme === 'midnight' ? 'border-gray-700/40' : theme === 'dark' ? 'border-slate-600/30' : 'border-white/20'
             }`}
           >
@@ -490,31 +487,32 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
             <p className="text-white/80 text-sm font-semibold">Primex Infotech</p>
           </motion.div>
         </motion.div>
-      </div>
 
-      {/* Floating Theme Selector */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.5, duration: 0.6 }}
-        className="fixed bottom-6 right-6 flex flex-col gap-2 z-20"
-      >
+        {/* Theme Selector at bottom of main container */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1, duration: 0.4 }}
+          className="flex flex-row justify-center gap-2 sm:gap-3 mt-6"
+        >
         {/* Light Theme */}
         <motion.button
           onClick={() => setTheme('light')}
-          className={`p-3 rounded-full shadow-2xl backdrop-blur-md border transition-all duration-500 hover:scale-110 ${
+          whileTap={{ scale: 0.95 }}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-2xl backdrop-blur-md border transition-colors duration-300 touch-manipulation flex items-center justify-center ${
             theme === 'light' 
               ? 'bg-blue-500/80 border-blue-300/50' 
               : 'bg-white/20 hover:bg-white/30 border-white/30'
           }`}
         >
-          <Sun className="w-5 h-5 text-white" />
+          <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </motion.button>
 
         {/* Dark Theme */}
         <motion.button
           onClick={() => setTheme('dark')}
-          className={`p-3 rounded-full shadow-2xl backdrop-blur-md border transition-all duration-500 hover:scale-110 ${
+          whileTap={{ scale: 0.95 }}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-2xl backdrop-blur-md border transition-colors duration-300 touch-manipulation flex items-center justify-center ${
             theme === 'dark' 
               ? 'bg-purple-600/80 border-purple-400/50' 
               : theme === 'midnight'
@@ -522,13 +520,14 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
                 : 'bg-white/20 hover:bg-white/30 border-white/30'
           }`}
         >
-          <Moon className="w-5 h-5 text-white" />
+          <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </motion.button>
 
         {/* Midnight Theme */}
         <motion.button
           onClick={() => setTheme('midnight')}
-          className={`p-3 rounded-full shadow-2xl backdrop-blur-md border transition-all duration-500 hover:scale-110 ${
+          whileTap={{ scale: 0.95 }}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-2xl backdrop-blur-md border transition-colors duration-300 touch-manipulation flex items-center justify-center ${
             theme === 'midnight' 
               ? 'bg-gradient-to-r from-red-900/80 to-orange-900/80 border-red-700/50' 
               : theme === 'dark' || theme === 'solid'
@@ -536,13 +535,14 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
                 : 'bg-white/20 hover:bg-white/30 border-white/30'
           }`}
         >
-          <div className="w-5 h-5 bg-gradient-to-br from-red-500 to-orange-500 rounded-full"></div>
+          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-br from-red-500 to-orange-500 rounded-full"></div>
         </motion.button>
 
         {/* Solid Theme */}
         <motion.button
           onClick={() => setTheme('solid')}
-          className={`p-3 rounded-full shadow-2xl backdrop-blur-md border transition-all duration-500 hover:scale-110 ${
+          whileTap={{ scale: 0.95 }}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-2xl backdrop-blur-md border transition-colors duration-300 touch-manipulation flex items-center justify-center ${
             theme === 'solid' 
               ? 'bg-slate-600/80 border-slate-400/50' 
               : theme === 'dark' || theme === 'midnight'
@@ -550,9 +550,10 @@ const WelcomeScreen = ({ onLogin, onSignUp }) => {
                 : 'bg-white/20 hover:bg-white/30 border-white/30'
           }`}
         >
-          <Palette className="w-5 h-5 text-white" />
+          <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </motion.button>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };

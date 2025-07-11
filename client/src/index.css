@@ -260,14 +260,210 @@ input[type="range"]::-moz-range-thumb {
   @apply bg-red-900/20 text-red-400;
 }
 
-/* Responsive utilities */
-@media (max-width: 768px) {
+/* Base responsive utilities */
+* {
+  box-sizing: border-box;
+}
+
+/* Optimize touch interactions */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Prevent flickering on mobile */
+.will-change-transform {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Mobile optimization (phones) */
+@media (max-width: 640px) {
   .mobile-compact {
-    padding: 0.5rem;
+    padding: 0.75rem;
   }
   
   .mobile-text {
     font-size: 0.875rem;
+  }
+  
+  /* Reduce backdrop blur for better mobile performance */
+  .backdrop-blur-lg {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  
+  .backdrop-blur-md {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  
+  /* Optimize button touch targets */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent zoom on input focus */
+  input[type="text"], 
+  input[type="password"], 
+  input[type="email"], 
+  input[type="tel"] {
+    font-size: 16px;
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-compact {
+    padding: 1rem;
+  }
+  
+  .backdrop-blur-lg {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .backdrop-blur-md {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Desktop optimization */
+@media (min-width: 1025px) {
+  .backdrop-blur-lg {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .backdrop-blur-md {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* Landscape orientation optimization */
+@media (orientation: landscape) and (max-height: 600px) {
+  .landscape-compact {
+    padding: 1rem;
+  }
+  
+  .landscape-small-text {
+    font-size: 0.875rem;
+  }
+}
+
+/* Mobile search bar (shown only on mobile) */
+.mobile-search {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-search {
+    display: flex;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 25;
+    padding: 1rem;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .mobile-search {
+    background: #1f2937;
+    border-bottom-color: #374151;
+  }
+}
+
+/* Improved responsive grid utilities */
+.responsive-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .responsive-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Enhanced mobile optimizations */
+@media (max-width: 640px) {
+  /* Increase touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Reduce margins and padding for mobile */
+  .mobile-spacing {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  /* Hide non-essential elements on very small screens */
+  .mobile-hide {
+    display: none;
+  }
+  
+  /* Adjust text sizes for better readability */
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  
+  /* Optimize table scrolling */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Better form inputs */
+  input, select, textarea {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-spacing {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1025px) {
+  .desktop-spacing {
+    margin: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .desktop-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -280,5 +476,24 @@ input[type="range"]::-moz-range-thumb {
   body {
     background: white !important;
     color: black !important;
+  }
+}
+
+/* Safe area insets for mobile devices with notches */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-area-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 }

@@ -13,34 +13,32 @@ import {
 } from 'lucide-react';
 
 const Header = ({ onThemeToggle }) => {
-  const { isCollapsed, toggleSidebar } = useSidebar();
+  const { isCollapsed, toggleSidebar, isMobile } = useSidebar();
   const { compactMode } = useTheme();
   const { user, logout } = useAuth();
   const [notifications] = useState(3);
 
   return (
     <motion.header 
-      initial={{ marginLeft: isCollapsed ? '64px' : '256px' }}
-      animate={{ marginLeft: isCollapsed ? '64px' : '256px' }}
+      initial={{ marginLeft: isMobile ? '0' : (isCollapsed ? '64px' : '256px') }}
+      animate={{ marginLeft: isMobile ? '0' : (isCollapsed ? '64px' : '256px') }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30"
     >
-      <div className={`flex items-center justify-between ${compactMode ? 'px-4 py-1.5' : 'px-6 py-2'}`}>
-        <div className="flex items-center space-x-4">
+      <div className={`flex items-center justify-between ${compactMode ? 'px-3 py-1.5' : 'px-4 md:px-6 py-2'}`}>
+        <div className="flex items-center space-x-2 md:space-x-4">
           {/* Hamburger Menu Button */}
           <button 
             onClick={toggleSidebar}
-            className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Toggle Menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-
-
         </div>
 
-        {/* Centered Search Bar */}
-        <div className="flex-1 flex justify-center px-8">
+        {/* Search Bar - Hidden on mobile, shown on tablet+ */}
+        <div className="hidden md:flex flex-1 justify-center px-4 lg:px-8">
           <div className="relative flex items-center bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-600 overflow-hidden max-w-md w-full transition-all duration-300 hover:shadow-xl hover:scale-105 focus-within:shadow-xl focus-within:scale-105 focus-within:border-blue-400 dark:focus-within:border-blue-500">
             <select className="px-3 py-2 text-sm border-0 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-0 focus:outline-none min-w-0 flex-shrink-0 rounded-l-full transition-colors duration-200">
               <option value="awb" className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white py-1">AWB ID</option>
@@ -59,11 +57,10 @@ const Header = ({ onThemeToggle }) => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
-
+        <div className="flex items-center space-x-1 md:space-x-4">
           {/* Notifications */}
           <div className="relative">
-            <button className="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            <button className="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
               <Bell className="w-5 h-5" />
               {notifications > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
@@ -73,8 +70,8 @@ const Header = ({ onThemeToggle }) => {
             </button>
           </div>
 
-          {/* Credits */}
-          <div className="flex items-center space-x-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3 py-2 rounded-lg">
+          {/* Credits - Hidden on mobile */}
+          <div className="hidden sm:flex items-center space-x-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3 py-2 rounded-lg">
             <Coins className="w-4 h-4" />
             <span className="text-sm font-medium">Credits: 1,247</span>
           </div>
@@ -82,13 +79,13 @@ const Header = ({ onThemeToggle }) => {
           {/* Profile */}
           <div className="flex items-center space-x-3">
             <div className="relative group">
-              <button className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors">
+              <button className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors touch-manipulation min-h-[44px]">
                 <img 
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&h=40" 
                   alt="Profile" 
                   className="w-8 h-8 rounded-full"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-300">{user?.name || 'John Doe'}</span>
+                <span className="hidden md:block text-sm text-gray-700 dark:text-gray-300">{user?.name || 'John Doe'}</span>
                 <ChevronDown className="w-4 h-4 text-gray-400" />
               </button>
               
@@ -97,7 +94,7 @@ const Header = ({ onThemeToggle }) => {
                 <div className="py-1">
                   <button
                     onClick={logout}
-                    className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation min-h-[44px]"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Logout</span>
@@ -110,7 +107,7 @@ const Header = ({ onThemeToggle }) => {
           {/* Theme Toggle */}
           <button 
             onClick={onThemeToggle}
-            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <Palette className="w-5 h-5" />
           </button>
